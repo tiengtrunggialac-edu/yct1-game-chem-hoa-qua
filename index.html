@@ -1,0 +1,301 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>YCT 1 - Chém hoa quả tiếng Trung</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f7f8f8;color:#263449;font-family:Arial,"Microsoft YaHei",sans-serif}
+header{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:12px;background:white}
+.brand{font-size:clamp(17px,3vw,24px);font-weight:900;color:#b91f2c;flex:1}
+.pill{padding:8px 12px;background:#fff0e8;border-radius:20px;font-weight:bold;white-space:nowrap}
+main{padding:12px;max-width:1100px;margin:auto}
+.toolbar,.controls{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+select,button{font:inherit;border:0;border-radius:12px;padding:12px;cursor:pointer}
+select{flex:1;min-width:210px;background:#fff;border:1px solid #ddd}
+button{background:#fff;font-weight:bold;box-shadow:0 2px 6px #0001}
+.primary{background:#b91f2c;color:white}
+.prompt{background:#fff5f1;border:2px solid #ffc9bc;border-radius:20px;padding:14px;text-align:center;margin-bottom:12px}
+.prompt small{color:#866f6c;font-weight:bold}
+#meaning{font-size:clamp(28px,5vw,44px);font-weight:900;color:#8e202c;margin:10px}
+#hint{min-height:23px;color:#78696c}
+#board{height:min(60vh,600px);min-height:350px;position:relative;overflow:hidden;border:3px solid #65432d;border-radius:22px;background:repeating-linear-gradient(90deg,transparent 0 90px,#ffffff0b 91px 94px),linear-gradient(#573823,#3b2518);box-shadow:inset 0 10px 30px #0002;touch-action:none}
+.board-progress{position:absolute;z-index:2;top:10px;left:12px;right:12px;height:10px;border-radius:20px;background:#ffffff45;overflow:hidden}
+#roundbar{height:100%;width:100%;background:#5be184;transition:width .2s}
+ .fruit{position:absolute;width:clamp(76px,11vw,108px);height:clamp(76px,11vw,108px);border:0;border-radius:0;padding:0;display:flex;align-items:center;justify-content:center;background:transparent;box-shadow:none;z-index:3;user-select:none;touch-action:none;font-size:clamp(55px,8vw,78px);line-height:1}
+.fruit span{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:#fffdf5ef;border:2px solid #ffffffd9;border-radius:14px;padding:3px 7px;font-size:clamp(19px,2.8vw,27px);font-weight:900;color:#243247;pointer-events:none;white-space:nowrap;box-shadow:0 2px 5px #0003;z-index:2}
+.fruit .fruit-icon{display:none}
+.fruit .leaf{display:none}
+.fruit.cut{pointer-events:none;animation:cut .2s forwards}
+@keyframes cut{to{scale:.25;rotate:35deg;opacity:0}}
+.juice{position:absolute;z-index:6;width:9px;height:9px;border-radius:50%;pointer-events:none;animation:burst .6s ease-out forwards}
+@keyframes burst{to{transform:translate(var(--dx),var(--dy)) scale(.1);opacity:0}}
+.half{position:absolute;z-index:5;font-size:36px;pointer-events:none;animation:split .65s ease-out forwards}
+@keyframes split{to{transform:translate(var(--dx),100px) rotate(var(--rot));opacity:0}}
+.slash{position:absolute;z-index:8;height:5px;border-radius:100%;background:linear-gradient(90deg,transparent,#fff,#8df7ff,transparent);box-shadow:0 0 12px #a8ffff;pointer-events:none;animation:slash .2s forwards}
+@keyframes slash{to{opacity:0;transform:scaleX(1.5)}}
+#gameover{display:none;position:absolute;z-index:20;inset:0;background:#241b1beF;color:white;align-items:center;justify-content:center;text-align:center;padding:20px}
+#gameover.show{display:flex}
+.card{background:white;color:#263449;padding:24px;border-radius:20px;max-width:330px}
+.controls button{flex:1}
+#feedback{min-height:28px;font-weight:bold;margin:8px 2px}
+.good{color:#16854a}.bad{color:#b91f2c}
+.note{background:white;border:1px solid #e5e8ef;border-radius:14px;padding:12px;line-height:1.5}
+@media(max-width:600px){
+ header{padding:9px;gap:6px}.brand{flex-basis:100%}.pill{font-size:12px;padding:7px 9px}
+ main{padding:9px}.toolbar select{width:100%;min-width:100%}.toolbar button{flex:1}
+ #board{height:55vh;min-height:330px;border-radius:17px}
+ .fruit{width:76px;height:76px}.fruit span{font-size:21px}.fruit .fruit-icon{font-size:68px}
+ .controls button{font-size:13px;padding:11px 5px}
+}
+</style>
+</head>
+<body>
+<header>
+ <div class="brand">🍉 YCT 1 · CHÉM HOA QUẢ</div>
+ <div class="pill">⭐ Điểm: <span id="score">0</span></div>
+ <div class="pill">❤️ <span id="lives">3</span></div>
+ <div class="pill">⏱ <span id="time">00:00</span></div>
+</header>
+
+<main>
+ <div class="toolbar">
+  <select id="lesson">
+   <option value="1">Bài 1 – 你好！</option>
+   <option value="2">Bài 2 – 你叫什么？</option>
+   <option value="3">Bài 3 – 他是谁？</option>
+   <option value="4">Bài 4 – 我家有四口人。</option>
+   <option value="5" selected>Bài 5 – 我六岁。</option>
+   <option value="all">Ôn tập tổng hợp Bài 1–5</option>
+  </select>
+  <button class="primary" id="start">▶ Bắt đầu / chơi lại</button>
+  <button id="pause">⏸ Tạm dừng</button>
+ </div>
+
+ <section class="prompt">
+  <small>CHÉM CÁC QUẢ CÓ CHỮ HÁN ĐÚNG VỚI NGHĨA</small>
+  <div id="meaning">Sẵn sàng chưa?</div>
+  <div id="hint">Chọn bài rồi bấm Bắt đầu</div>
+ </section>
+
+ <section id="board">
+  <div class="board-progress"><div id="roundbar"></div></div>
+  <div id="gameover"><div class="card">
+   <h2>💔 Hết mạng!</h2>
+   <p id="result"></p>
+   <button class="primary" id="again">Chơi lại</button>
+  </div></div>
+ </section>
+
+ <div class="controls">
+  <button id="sound">🔊 Đọc từ hiện tại</button>
+  <button id="show">💡 Hiện pinyin</button>
+  <button id="skip">➡ Bỏ qua từ</button>
+ </div>
+ <div id="feedback"></div>
+ <div class="note"><b>Cách chơi:</b> Quả bay từ dưới lên cao rồi rơi xuống với tốc độ chậm hơn. Vuốt chuột hoặc ngón tay qua quả đúng. Mỗi quả đúng được +1 điểm và tự đọc từ tiếng Trung. Chém nhầm mất 1 mạng; bắt đầu có 3 mạng.</div>
+</main>
+
+<script>
+const DATA={
+1:[
+["你","nǐ","bạn, cậu"],["好","hǎo","tốt, khỏe"],["你好","nǐ hǎo","xin chào"],
+["老师","lǎoshī","giáo viên"],["再见","zàijiàn","tạm biệt"],
+["一","yī","một"],["二","èr","hai"],["三","sān","ba"],["四","sì","bốn"],["五","wǔ","năm"],
+["六","liù","sáu"],["七","qī","bảy"],["八","bā","tám"],["九","jiǔ","chín"],["十","shí","mười"]
+],
+2:[
+["我","wǒ","tôi, mình"],["叫","jiào","tên là"],["什么","shénme","gì, cái gì"],
+["认识","rènshi","quen biết"],["很","hěn","rất"],["高兴","gāoxìng","vui vẻ"],
+["吗","ma","trợ từ nghi vấn"],["不","bù","không"],["他","tā","anh ấy"],["她","tā","cô ấy"]
+],
+3:[
+["是","shì","là"],["谁","shéi","ai"],["哪","nǎ","nào"],["国","guó","nước, quốc gia"],
+["中国","Zhōngguó","Trung Quốc"],["中国人","Zhōngguó rén","người Trung Quốc"],
+["人","rén","người"],["越南","Yuènán","Việt Nam"],["越南人","Yuènán rén","người Việt Nam"]
+],
+4:[
+["家","jiā","nhà, gia đình"],["有","yǒu","có"],["几","jǐ","mấy, bao nhiêu"],
+["口","kǒu","lượng từ chỉ người trong gia đình"],["和","hé","và"],["没有","méiyǒu","không có"],
+["个","ge","lượng từ"],["爸爸","bàba","bố, ba"],["妈妈","māma","mẹ"],
+["哥哥","gēge","anh trai"],["姐姐","jiějie","chị gái"],
+["弟弟","dìdi","em trai"],["妹妹","mèimei","em gái"]
+],
+5:[
+["岁","suì","tuổi"],["几岁","jǐ suì","mấy tuổi"],["多大","duō dà","bao nhiêu tuổi"],
+["也","yě","cũng"],["六","liù","sáu"],["七","qī","bảy"],["八","bā","tám"],
+["九","jiǔ","chín"],["十","shí","mười"],["我六岁","wǒ liù suì","tôi sáu tuổi"]
+]};
+
+const $=id=>document.getElementById(id),board=$("board");
+let deck=[],idx=0,score=0,lives=3,running=false,paused=false;
+let startTime=0,elapsed=0,target=null,fruits=[],particles=[],halves=[];
+let spawnTimer=null,roundTimer=null,lastFrame=0,raf=null,audioCtx=null;
+let swiping=false,lastPoint=null,hitThisSwipe=new Set();
+const FRUIT_TYPES=[["apple","🍎"],["orange","🍊"],["lemon","🍋"],["grape","🍇"],["strawberry","🍓"],["watermelon","🍉"],["pear","🍐"],["peach","🍑"],["kiwi","🥝"],["pineapple","🍍"]];
+
+function shuffle(a){return [...a].sort(()=>Math.random()-.5)}
+function words(){const v=$("lesson").value;return v==="all"?Object.values(DATA).flat():DATA[v]}
+function audio(){
+ try{const A=window.AudioContext||window.webkitAudioContext;if(A){audioCtx=audioCtx||new A();if(audioCtx.state==="suspended")audioCtx.resume()}}catch(e){}
+}
+function tone(freq,dur,type="sawtooth",vol=.08,delay=0){
+ try{audio();if(!audioCtx)return;const t=audioCtx.currentTime+delay,o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=type;o.frequency.setValueAtTime(freq,t);o.frequency.exponentialRampToValueAtTime(Math.max(50,freq*.25),t+dur);g.gain.setValueAtTime(.001,t);g.gain.exponentialRampToValueAtTime(vol,t+.01);g.gain.exponentialRampToValueAtTime(.001,t+dur);o.connect(g);g.connect(audioCtx.destination);o.start(t);o.stop(t+dur+.02)}catch(e){}
+}
+function sliceSound(){tone(900,.12,"sawtooth",.1);tone(620,.18,"triangle",.07,.05);tone(1100,.08,"sine",.04,.1)}
+function wrongSound(){tone(180,.16,"square",.06)}
+function speak(text){
+ if(!("speechSynthesis"in window))return;
+ speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang="zh-CN";u.rate=.78;
+ const vs=speechSynthesis.getVoices();u.voice=vs.find(v=>/^zh-CN/i.test(v.lang))||vs.find(v=>/^zh/i.test(v.lang))||null;speechSynthesis.speak(u);
+}
+function clearTimers(){clearTimeout(spawnTimer);clearTimeout(roundTimer)}
+function start(){
+ audio();speechSynthesis?.cancel?.();clearTimers();
+ deck=shuffle(words());idx=0;score=0;lives=3;elapsed=0;startTime=performance.now();
+ running=true;paused=false;target=null;fruits=[];particles=[];halves=[];
+ board.querySelectorAll(".fruit,.juice,.half,.slash").forEach(e=>e.remove());
+ $("score").textContent="0";$("lives").textContent="3";$("time").textContent="00:00";
+ $("pause").textContent="⏸ Tạm dừng";$("feedback").textContent="";
+ $("gameover").classList.remove("show");
+ nextWord();scheduleSpawn();lastFrame=performance.now();
+ if(!raf)animate(lastFrame);
+}
+function nextWord(){
+ clearTimeout(roundTimer);
+ if(!running)return;
+ if(idx>=deck.length){finish();return}
+ target=deck[idx];
+ $("meaning").textContent=target[2];$("hint").textContent="Vuốt qua mọi quả có chữ Hán đúng";
+ $("roundbar").style.width="100%";$("feedback").textContent="";
+ // Thời gian luyện mỗi từ tăng lên 12 giây.
+ roundTimer=setTimeout(()=>{if(running&&!paused){idx++;nextWord()}},12000);
+}
+function finish(){
+ running=false;clearTimers();
+ $("meaning").textContent="Hoàn thành! 🎉";$("hint").textContent="Bạn đã luyện hết từ vựng.";
+ $("feedback").textContent="Tổng điểm: "+score+". Bấm Bắt đầu để chơi lại.";
+}
+function gameOver(){
+ running=false;clearTimers();fruits.forEach(f=>f.el.remove());fruits=[];
+ $("result").textContent="Bạn đạt "+score+" điểm.";
+ $("gameover").classList.add("show");$("meaning").textContent="Game Over 💔";$("hint").textContent="Bạn đã hết 3 mạng. Nhấn Chơi lại để bắt đầu ván mới.";
+ $("start").disabled=true;$("start").style.opacity=".5";$("start").style.cursor="not-allowed";
+}
+function spawn(){
+ if(!running||paused||!target)return;
+ const w=board.clientWidth,h=board.clientHeight,pool=words().filter(a=>a[0]!==target[0]);
+ const n=Math.random()<.25?2:1;
+ for(let i=0;i<n;i++){
+  const word=Math.random()<.75?target:pool[Math.floor(Math.random()*pool.length)];
+  const fruitType=FRUIT_TYPES[Math.floor(Math.random()*FRUIT_TYPES.length)];
+  const el=document.createElement("button");el.className="fruit "+fruitType[0];
+  el.textContent=fruitType[1];
+  const label=document.createElement("span");
+  label.textContent=word[0];
+  el.appendChild(label);el.setAttribute("aria-label",word[0]);board.appendChild(el);
+  const radius=el.offsetWidth/2||38,x=Math.max(radius+4,Math.min(w-radius-4,Math.random()*w)),y=h+radius+Math.random()*25;
+  // Vận tốc chậm hơn, quỹ đạo cao vừa phải, dễ chém.
+  const gravity=280,peak=h*(1.15+Math.random()*.25);
+  const f={el,word,x,y,fruitEmoji:fruitType[1],vx:(Math.random()-.5)*65,vy:-Math.sqrt(2*gravity*peak),gravity,radius,rot:Math.random()-.5,vr:(Math.random()-.5)*.8,alive:true,good:word[0]===target[0]};
+  fruits.push(f);
+ }
+ scheduleSpawn();
+}
+function scheduleSpawn(){clearTimeout(spawnTimer);if(running&&!paused)spawnTimer=setTimeout(spawn,1200+Math.random()*500)}
+function burst(x,y){
+ const colors=["#ffed77","#ff5b66","#ff9c42","#a8f06a","#fff","#7deeff"];
+ for(let i=0;i<18;i++){
+  const p=document.createElement("i");p.className="juice";p.style.left=x+"px";p.style.top=y+"px";
+  p.style.setProperty("--dx",(Math.random()*140-70)+"px");p.style.setProperty("--dy",(Math.random()*120-60)+"px");
+  p.style.background=colors[i%colors.length];board.appendChild(p);setTimeout(()=>p.remove(),650);
+ }
+}
+function split(f){
+ f.alive=false;f.el.classList.add("cut");burst(f.x,f.y);
+ for(const side of [-1,1]){
+  const h=document.createElement("div");h.className="half";h.textContent=f.fruitEmoji||"🍉";
+  h.style.left=(f.x-20)+"px";h.style.top=(f.y-20)+"px";
+  h.style.setProperty("--dx",(side*65)+"px");h.style.setProperty("--rot",(side*40)+"deg");
+  board.appendChild(h);setTimeout(()=>h.remove(),700);
+ }
+ const s=document.createElement("i");s.className="slash";s.style.left=(f.x-60)+"px";s.style.top=f.y+"px";s.style.width="120px";board.appendChild(s);setTimeout(()=>s.remove(),250);
+ setTimeout(()=>f.el.remove(),220);
+}
+function hit(f){
+ if(!f.alive||!running||paused)return;
+ if(f.good){
+  score++;$("score").textContent=score;
+  $("feedback").className="good";$("feedback").textContent="✅ "+f.word[0]+" · "+f.word[1]+"  +1 điểm";
+  $("hint").textContent="Tiếp tục chém các quả cùng chữ Hán!";
+  sliceSound();speak(f.word[0]);split(f);
+ }else{
+  f.alive=false;lives=Math.max(0,lives-1);$("lives").textContent=lives;
+  $("feedback").className="bad";$("feedback").textContent="❌ Sai rồi! Mất 1 mạng. Còn "+lives+" mạng.";
+  wrongSound();f.el.remove();burst(f.x,f.y);
+  if(lives===0)setTimeout(gameOver,250);
+ }
+}
+function distSeg(px,py,x1,y1,x2,y2){
+ const dx=x2-x1,dy=y2-y1,l=dx*dx+dy*dy;let t=l?((px-x1)*dx+(py-y1)*dy)/l:0;t=Math.max(0,Math.min(1,t));
+ return Math.hypot(px-x1-t*dx,py-y1-t*dy);
+}
+function point(e){const r=board.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top}}
+board.addEventListener("pointerdown",e=>{
+ if(!running||paused||e.target.closest("#gameover"))return;
+ audio();swiping=true;lastPoint=point(e);hitThisSwipe.clear();
+ try{board.setPointerCapture(e.pointerId)}catch(err){}
+});
+board.addEventListener("pointermove",e=>{
+ if(!swiping||!running||paused||!lastPoint)return;
+ const p=point(e);
+ for(const f of fruits){
+  if(!f.alive||hitThisSwipe.has(f))continue;
+  if(distSeg(f.x,f.y,lastPoint.x,lastPoint.y,p.x,p.y)<f.radius+10){hitThisSwipe.add(f);hit(f)}
+ }
+ const s=document.createElement("i");s.className="slash";s.style.left=lastPoint.x+"px";s.style.top=lastPoint.y+"px";
+ s.style.width=Math.min(150,Math.hypot(p.x-lastPoint.x,p.y-lastPoint.y)+30)+"px";
+ s.style.transform="rotate("+Math.atan2(p.y-lastPoint.y,p.x-lastPoint.x)+"rad)";
+ board.appendChild(s);setTimeout(()=>s.remove(),180);lastPoint=p;
+});
+function endSwipe(){swiping=false;lastPoint=null;hitThisSwipe.clear()}
+board.addEventListener("pointerup",endSwipe);board.addEventListener("pointercancel",endSwipe);board.addEventListener("pointerleave",endSwipe);
+
+function animate(now){
+ raf=requestAnimationFrame(animate);
+ const dt=Math.min(.04,Math.max(0,(now-lastFrame)/1000));lastFrame=now;
+ if(running&&!paused){
+  const secs=Math.floor(elapsed+(performance.now()-startTime)/1000);
+  $("time").textContent=String(Math.floor(secs/60)).padStart(2,"0")+":"+String(secs%60).padStart(2,"0");
+  fruits.forEach(f=>{
+   if(!f.alive)return;
+   f.vy+=f.gravity*dt;f.x+=f.vx*dt;f.y+=f.vy*dt;f.rot+=f.vr*dt;
+   const w=board.clientWidth;if(f.x<f.radius||f.x>w-f.radius)f.vx*=-.8;
+   f.el.style.left=(f.x-f.radius)+"px";f.el.style.top=(f.y-f.radius)+"px";
+   f.el.style.transform="rotate("+f.rot+"rad)";
+   if(f.y>board.clientHeight+f.radius+40){f.alive=false;f.el.remove()}
+  });
+  fruits=fruits.filter(f=>f.alive);
+ }
+}
+$("start").onclick=()=>{if(!$("gameover").classList.contains("show"))start()};
+$("again").onclick=()=>{$("gameover").classList.remove("show");$("start").disabled=false;$("start").style.opacity="1";$("start").style.cursor="pointer";start()};
+$("pause").onclick=()=>{
+ if(!running)return;paused=!paused;$("pause").textContent=paused?"▶ Tiếp tục":"⏸ Tạm dừng";
+ if(paused){clearTimeout(spawnTimer);clearTimeout(roundTimer)}
+ else{startTime=performance.now();scheduleSpawn();roundTimer=setTimeout(()=>{if(running&&!paused){idx++;nextWord()}},12000)}
+};
+$("lesson").onchange=()=>{
+ running=false;paused=false;clearTimers();fruits.forEach(f=>f.el.remove());fruits=[];idx=0;score=0;lives=3;
+ $("score").textContent="0";$("lives").textContent="3";$("time").textContent="00:00";
+ $("meaning").textContent="Sẵn sàng chưa?";$("hint").textContent="Chọn bài rồi bấm Bắt đầu";
+ $("feedback").textContent="";$("gameover").classList.remove("show");
+};
+$("sound").onclick=()=>{if(target)speak(target[0])};
+$("show").onclick=()=>{if(target)$("hint").textContent="Pinyin: "+target[1]};
+$("skip").onclick=()=>{if(running&&!paused){idx++;nextWord()}};
+</script>
+</body>
+</html>
