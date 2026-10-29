@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>YCT 1 - Chém hoa quả tiếng Trung</title>
+<title>YCT 1 - Chém hoa quả tiếng Trung (Bài 1–11)</title>
 <style>
 *{box-sizing:border-box}
 body{margin:0;background:#f7f8f8;color:#263449;font-family:Arial,"Microsoft YaHei",sans-serif}
@@ -67,8 +67,14 @@ button{background:#fff;font-weight:bold;box-shadow:0 2px 6px #0001}
    <option value="2">Bài 2 – 你叫什么？</option>
    <option value="3">Bài 3 – 他是谁？</option>
    <option value="4">Bài 4 – 我家有四口人。</option>
-   <option value="5" selected>Bài 5 – 我六岁。</option>
-   <option value="all">Ôn tập tổng hợp Bài 1–5</option>
+   <option value="5" selected>Bài 5 – 我6岁。</option>
+   <option value="6">Bài 6 – 你的个子真高！</option>
+   <option value="7">Bài 7 – 这是谁的狗？</option>
+   <option value="8">Bài 8 – 我去商店。</option>
+   <option value="9">Bài 9 – 今天星期几？</option>
+   <option value="10">Bài 10 – 现在几点？</option>
+   <option value="11">Bài 11 – 你吃什么？</option>
+   <option value="all">Ôn tập tổng hợp Bài 1–11</option>
   </select>
   <button class="primary" id="start">▶ Bắt đầu / chơi lại</button>
   <button id="pause">⏸ Tạm dừng</button>
@@ -101,32 +107,38 @@ button{background:#fff;font-weight:bold;box-shadow:0 2px 6px #0001}
 <script>
 const DATA={
 1:[
-["你","nǐ","bạn, cậu"],["好","hǎo","tốt, khỏe"],["你好","nǐ hǎo","xin chào"],
-["老师","lǎoshī","giáo viên"],["再见","zàijiàn","tạm biệt"],
-["一","yī","một"],["二","èr","hai"],["三","sān","ba"],["四","sì","bốn"],["五","wǔ","năm"],
-["六","liù","sáu"],["七","qī","bảy"],["八","bā","tám"],["九","jiǔ","chín"],["十","shí","mười"]
+["你","nǐ","bạn, em"],["好","hǎo","tốt, khỏe"],["你好","nǐ hǎo","xin chào"],["老师","lǎoshī","thầy cô, giáo viên"],["再见","zàijiàn","tạm biệt"],["您","nín","ngài, thầy/cô (kính ngữ)"],["同学","tóngxué","bạn học"],["早上好","zǎoshang hǎo","chào buổi sáng"],["零","líng","số 0"],
+["一","yī","một"],["二","èr","hai"],["三","sān","ba"],["四","sì","bốn"],["五","wǔ","năm"],["六","liù","sáu"],["七","qī","bảy"],["八","bā","tám"],["九","jiǔ","chín"],["十","shí","mười"],["你好吗","nǐ hǎo ma","bạn khỏe không"],["我很好","wǒ hěn hǎo","tôi rất khỏe"],["谢谢","xièxie","cảm ơn"],["对","duì","đúng"],["错","cuò","sai"],["听力","tīnglì","nghe hiểu"],["阅读","yuèdú","đọc hiểu"]
 ],
 2:[
-["我","wǒ","tôi, mình"],["叫","jiào","tên là"],["什么","shénme","gì, cái gì"],
-["认识","rènshi","quen biết"],["很","hěn","rất"],["高兴","gāoxìng","vui vẻ"],
-["吗","ma","trợ từ nghi vấn"],["不","bù","không"],["他","tā","anh ấy"],["她","tā","cô ấy"]
+["我","wǒ","tôi, tớ"],["叫","jiào","tên là"],["认识","rènshi","quen, biết"],["高兴","gāoxìng","vui mừng"],["什么","shénme","gì, cái gì"],["她","tā","cô ấy"],["很","hěn","rất"],["不","bù","không"],["吗","ma","trợ từ nghi vấn"],["名字","míngzi","tên"],["很高兴","hěn gāoxìng","rất vui"],["朋友","péngyou","bạn bè"],["他","tā","anh ấy"],["也","yě","cũng"],["谁","shéi","ai"],["李","Lǐ","họ Lý"],["王","Wáng","họ Vương"],["张","Zhāng","họ Trương"],["刘","Liú","họ Lưu"],["小朋友","xiǎopéngyou","các em nhỏ"],["自我介绍","zìwǒ jièshào","tự giới thiệu"],["提问","tíwèn","đặt câu hỏi"]
 ],
 3:[
-["是","shì","là"],["谁","shéi","ai"],["哪","nǎ","nào"],["国","guó","nước, quốc gia"],
-["中国","Zhōngguó","Trung Quốc"],["中国人","Zhōngguó rén","người Trung Quốc"],
-["人","rén","người"],["越南","Yuènán","Việt Nam"],["越南人","Yuènán rén","người Việt Nam"]
+["他","tā","anh ấy, ông ấy"],["是","shì","là"],["谁","shéi","ai"],["人","rén","người"],["哪","nǎ","nào"],["国","guó","nước, quốc gia"],["中国","Zhōngguó","Trung Quốc"],["中国人","Zhōngguó rén","người Trung Quốc"],["越南","Yuènán","Việt Nam"],["越南人","Yuènán rén","người Việt Nam"],["美国","Měiguó","Mỹ"],["都","dōu","đều"],["他们","tāmen","bọn họ"],["好人","hǎorén","người tốt"],["男生","nánshēng","bạn nam"],["成龙","Chéng Lóng","Thành Long"],["姚明","Yáo Míng","Diêu Minh"],["漂亮","piàoliang","xinh đẹp"],["明星","míngxīng","người nổi tiếng"],["国籍","guójí","quốc tịch"]
 ],
 4:[
-["家","jiā","nhà, gia đình"],["有","yǒu","có"],["几","jǐ","mấy, bao nhiêu"],
-["口","kǒu","lượng từ chỉ người trong gia đình"],["和","hé","và"],["没有","méiyǒu","không có"],
-["个","ge","lượng từ"],["爸爸","bàba","bố, ba"],["妈妈","māma","mẹ"],
-["哥哥","gēge","anh trai"],["姐姐","jiějie","chị gái"],
-["弟弟","dìdi","em trai"],["妹妹","mèimei","em gái"]
+["家","jiā","nhà, gia đình"],["爸爸","bàba","bố, ba"],["妈妈","māma","mẹ"],["哥哥","gēge","anh trai"],["姐姐","jiějie","chị gái"],["妹妹","mèimei","em gái"],["有","yǒu","có"],["没有","méiyǒu","không có"],["弟弟","dìdi","em trai"],["孩子","háizi","con cái, trẻ em"],["口","kǒu","lượng từ chỉ người trong gia đình"],["个","gè","lượng từ"],["几","jǐ","mấy, bao nhiêu"],["和","hé","và"],["照片","zhàopiàn","bức ảnh"],["爷爷","yéye","ông nội"],["奶奶","nǎinai","bà nội"],["我家有四口人","wǒ jiā yǒu sì kǒu rén","nhà tôi có bốn người"],["爱","ài","yêu, thương"],["只","zhī","lượng từ con vật"],["小狗","xiǎogǒu","chó con"],["小猫","xiǎomāo","mèo con"],["全家福","quánjiāfú","ảnh chụp cả nhà"],["亲情","qīnqíng","tình cảm gia đình"]
 ],
 5:[
-["岁","suì","tuổi"],["几岁","jǐ suì","mấy tuổi"],["多大","duō dà","bao nhiêu tuổi"],
-["也","yě","cũng"],["六","liù","sáu"],["七","qī","bảy"],["八","bā","tám"],
-["九","jiǔ","chín"],["十","shí","mười"],["我六岁","wǒ liù suì","tôi sáu tuổi"]
+["岁","suì","tuổi"],["多大","duō dà","bao nhiêu tuổi"],["也","yě","cũng"],["秘密","mìmì","bí mật"],["十几","shí jǐ","mười mấy"],["今年","jīnnián","năm nay"],["大小","dàxiǎo","kích thước, lớn nhỏ"],["十一","shíyī","mười một"],["十二","shí'èr","mười hai"],["十三","shísān","mười ba"],["十四","shísì","mười bốn"],["十五","shíwǔ","mười lăm"],["十六","shíliù","mười sáu"],["十七","shíqī","mười bảy"],["十八","shíbā","mười tám"],["十九","shíjiǔ","mười chín"],["二十","èrshí","hai mươi"],["三十","sānshí","ba mươi"],["五十","wǔshí","năm mươi"],["六十","liùshí","sáu mươi"],["一百","yìbǎi","một trăm"],["老人","lǎorén","người già"],["我六岁","wǒ liù suì","tôi sáu tuổi"],["相册","xiàngcè","album ảnh"],["年龄","niánlíng","độ tuổi"],["数字","shùzì","con số"],["统计","tǒngjì","thống kê"]
+],
+6:[
+["头发","tóufa","tóc"],["眼睛","yǎnjing","mắt"],["鼻子","bízi","mũi"],["耳朵","ěrduo","tai"],["嘴巴","zuǐba","miệng"],["脸","liǎn","khuôn mặt"],["手","shǒu","bàn tay"],["个子","gèzi","vóc dáng, thân hình"],["大","dà","to, lớn"],["小","xiǎo","nhỏ, bé"],["头","tóu","đầu"],["脚","jiǎo","bàn chân"],["身体","shēntǐ","cơ thể"],["长","cháng","dài"],["高","gāo","cao"],["的","de","trợ từ kết cấu, của"],["真","zhēn","thật, thật là"],["短","duǎn","ngắn"],["矮","ǎi","thấp"],["漂亮","piàoliang","xinh đẹp"],["妹妹的眼睛很小","mèimei de yǎnjing hěn xiǎo","mắt em gái rất nhỏ"],["你的个子真高","nǐ de gèzi zhēn gāo","bạn cao thật đấy"],["小蝌蚪","xiǎo kēdǒu","nòng nọc"],["腿","tuǐ","chân"],["尾巴","wěiba","đuôi"],["青蛙","qīngwā","ếch"],["外貌","wàimào","ngoại hình"],["特征","tèzhēng","đặc điểm"],["可爱","kě'ài","đáng yêu"]
+],
+7:[
+["猫","māo","con mèo"],["狗","gǒu","con chó"],["鱼","yú","con cá"],["鸟","niǎo","con chim"],["只","zhī","lượng từ con vật"],["动物","dòngwù","động vật"],["这","zhè","này, đây"],["这儿","zhèr","ở đây"],["那","nà","kia, đó"],["那儿","nàr","ở đó"],["看","kàn","nhìn, xem"],["多","duō","nhiều"],["少","shǎo","ít"],["哪儿","nǎr","ở đâu"],["宠物","chǒngwù","thú cưng"],["这是谁的狗","zhè shì shéi de gǒu","đây là chó của ai"],["这是我的狗","zhè shì wǒ de gǒu","đây là chó của tôi"],["很多小鱼","hěn duō xiǎo yú","rất nhiều cá nhỏ"],["鼠","shǔ","chuột"],["牛","niú","trâu, bò"],["虎","hǔ","hổ"],["兔","tù","thỏ"],["龙","lóng","rồng"],["蛇","shé","rắn"],["马","mǎ","ngựa"],["羊","yáng","dê, cừu"],["猴","hóu","khỉ"],["鸡","jī","gà"],["猪","zhū","lợn"],["所有格","suǒyǒugé","sở hữu cách"],["指示词","zhǐshìcí","từ chỉ định"]
+],
+8:[
+["学校","xuéxiào","trường học"],["商店","shāngdiàn","cửa hàng"],["去","qù","đi"],["在","zài","ở, tại"],["家","jiā","nhà"],["医院","yīyuàn","bệnh viện"],["哪儿","nǎr","ở đâu"],["谢谢","xièxie","cảm ơn"],["我们","wǒmen","chúng tôi, chúng ta"],["你们","nǐmen","các bạn"],["他们","tāmen","bọn họ"],["不客气","bú kèqi","không có chi"],["你姐姐在家吗","nǐ jiějie zài jiā ma","chị gái bạn có ở nhà không"],["她在学校","tā zài xuéxiào","chị ấy ở trường"],["我去商店","wǒ qù shāngdiàn","tôi đi đến cửa hàng"],["回","huí","trở về"],["回家","huí jiā","về nhà"],["加油","jiāyóu","cố lên"],["终点","zhōngdiǎn","vạch đích"],["目的地","mùdìdì","điểm đến"],["礼貌用语","lǐmào yòngyǔ","lời nói lịch sự"]
+],
+9:[
+["星期","xīngqī","tuần, thứ"],["星期一","xīngqīyī","thứ Hai"],["星期二","xīngqī'èr","thứ Ba"],["星期三","xīngqīsān","thứ Tư"],["星期四","xīngqīsì","thứ Năm"],["星期五","xīngqīwǔ","thứ Sáu"],["星期六","xīngqīliù","thứ Bảy"],["星期天","xīngqītiān","Chủ nhật"],["星期日","xīngqīrì","Chủ nhật"],["今天","jīntiān","hôm nay"],["明天","míngtiān","ngày mai"],["昨天","zuótiān","hôm qua"],["周末","zhōumò","cuối tuần"],["月","yuè","tháng"],["号","hào","ngày, mùng"],["生日","shēngrì","sinh nhật"],["喜欢","xǐhuan","thích"],["祝你生日快乐","zhù nǐ shēngrì kuàilè","chúc bạn sinh nhật vui vẻ"],["几月几号","jǐ yuè jǐ hào","ngày mấy tháng mấy"],["日历","rìlì","tờ lịch"],["日期","rìqī","ngày tháng"],["计划","jìhuà","kế hoạch"],["学画画儿","xué huà huàr","học vẽ"],["吃大餐","chī dà cān","ăn bữa thịnh soạn"],["写汉字","xiě Hànzì","viết chữ Hán"]
+],
+10:[
+["现在","xiànzài","bây giờ"],["点","diǎn","giờ"],["分","fēn","phút"],["早上","zǎoshang","buổi sáng"],["中午","zhōngwǔ","buổi trưa"],["晚上","wǎnshang","buổi tối"],["半","bàn","rưỡi, nửa"],["见","jiàn","gặp, thấy"],["太","tài","quá, lắm"],["太早了","tài zǎo le","sớm quá"],["几点","jǐ diǎn","mấy giờ"],["明天见","míngtiān jiàn","mai gặp"],["太好了","tài hǎo le","tốt quá"],["纽约","Niǔyuē","New York"],["北京","Běijīng","Bắc Kinh"],["悉尼","Xīní","Sydney"],["北极","Běijí","Bắc Cực"],["起床","qǐchuáng","thức dậy"],["时钟","shízhōng","đồng hồ"],["作息时间","zuòxī shíjiān","thời gian biểu sinh hoạt"],["十一点十分","shíyī diǎn shí fēn","11 giờ 10 phút"],["五点","wǔ diǎn","5 giờ"]
+],
+11:[
+["吃","chī","ăn"],["米饭","mǐfàn","cơm"],["面条","miàntiáo","mì sợi"],["苹果","píngguǒ","quả táo"],["包子","bāozi","bánh bao"],["饺子","jiǎozi","sủi cảo"],["好吃","hǎochī","ngon (đồ ăn)"],["喝","hē","uống"],["水","shuǐ","nước"],["牛奶","niúnǎi","sữa bò"],["爱","ài","yêu, thích"],["蛋糕","dàngāo","bánh ga-tô"],["茶","chá","trà"],["果汁","guǒzhī","nước ép trái cây"],["好喝","hǎohē","ngon (đồ uống)"],["哪个","nǎge","cái nào"],["寿司","shòusī","sushi"],["比萨","bǐsà","pizza"],["冰水","bīngshuǐ","nước đá"],["热水","rèshuǐ","nước nóng"],["香蕉","xiāngjiāo","chuối"],["竹子","zhúzi","tre"],["菜单","càidān","thực đơn"],["饮食习惯","yǐnshí xíguàn","thói quen ăn uống"],["你吃什么","nǐ chī shénme","bạn ăn gì"],["我爱吃蛋糕","wǒ ài chī dàngāo","tôi thích ăn bánh ga-tô"]
 ]};
 
 const $=id=>document.getElementById(id),board=$("board");
